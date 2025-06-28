@@ -1,0 +1,65 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+*.sqlite3
+.env
+.venv/
+venv/
+env/
+pip-wheel-metadata/
+*.egg-info/
+
+# Mac system files
+.DS_Store
+
+# VS Code
+.vscode/
+
+# JetBrains (PyCharm, IntelliJ)
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Swap and editor temp files
+*.swp
+*.swo
+*.tmp
+*.bak
+
+# YAML/JSON inputs (if sensitive/test data)
+examples/*.yaml
+examples/*.json
+
+# Logs & checkpoints
+logs/
+*.log
+
+# Frontend (optional)
+genapp-ui/node_modules/
+genapp-ui/.next/
+genapp-ui/dist/
+genapp-ui/build/
+genapp-ui/.env*
+
+# Docker (future)
+*.tar
+docker-compose.override.yml
+
+# Byte-compiled and cache
+.cache/
+.mypy_cache/
+.pytest_cache/
+
+# Testing / coverage
+htmlcov/
+coverage.xml
+*.cover
+*.pyc
+
+# OS metadata
+Thumbs.db
+ehthumbs.db
