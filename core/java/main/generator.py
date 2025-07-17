@@ -1,4 +1,4 @@
-# core/java/generator.py
+# core/java/main/generator.py
 
 import os
 import json
@@ -6,6 +6,8 @@ import yaml
 from pathlib import Path
 from utils.logger import get_logger
 from utils.error_handler import handle_failure, rollback, save_state, load_state
+from core.java.project_files.dockerfile_generator import generate_docker_files
+# (Import other generators as needed)
 
 def generate_java_project(entity_path, output_dir, project_name, version, resume=False):
     logger = get_logger("java-generator", project_name, version)
@@ -30,12 +32,19 @@ def generate_java_project(entity_path, output_dir, project_name, version, resume
         logger.debug(f"✅ Loaded {len(entity_defs)} entities")
 
         # Step 2: Create folder structure
+        project_path = Path(output_dir) / application_name
         if not resume or 'folders_created' not in state:
             create_java_structure(output_dir, application_name, logger)
             state['folders_created'] = True
             save_state(state_file, state)
 
-        # 🔜 TODO: Step 3+ Entity/repo/service/controller gen
+        # Step 3: Generate Docker-related files
+        if not resume or 'docker_created' not in state:
+            generate_docker_files(project_path, logger)
+            state['docker_created'] = True
+            save_state(state_file, state)
+
+        # 🔜 Add entity/service/repo/controller generation here
 
         logger.info("✅ Java backend generation completed!")
 
@@ -46,12 +55,7 @@ def generate_java_project(entity_path, output_dir, project_name, version, resume
 
 
 def create_java_structure(base_path, application_name, logger):
-    """
-    Create standard Spring Boot folder structure using:
-    com/ashbyte/{applicationName}
-    """
     base_dir = Path(base_path) / application_name / "src" / "main" / "java" / "com" / "ashbyte" / application_name
-
     folders = [
         "controller",
         "service",
@@ -62,20 +66,17 @@ def create_java_structure(base_path, application_name, logger):
         "exception",
         "config"
     ]
-
     for folder in folders:
         path = base_dir / folder
         path.mkdir(parents=True, exist_ok=True)
         logger.debug(f"📁 Created directory: {path}")
 
-    # Also create test folders
     test_base = Path(base_path) / application_name / "src" / "test" / "java" / "com" / "ashbyte" / application_name
     for folder in ["controller", "service", "repository", "exception"]:
         path = test_base / folder
         path.mkdir(parents=True, exist_ok=True)
         logger.debug(f"🧪 Created test directory: {path}")
 
-    # Resources folder for application.yml, schema.sql etc.
     resources_dir = Path(base_path) / application_name / "src" / "main" / "resources" / "db"
     resources_dir.mkdir(parents=True, exist_ok=True)
     logger.debug(f"📦 Created resources directory: {resources_dir}")
