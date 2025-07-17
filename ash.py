@@ -1,4 +1,5 @@
 # ash.py
+
 import typer
 from cli.backend import generate_backend
 
@@ -13,12 +14,13 @@ def genapp(
     deploy_aws: bool = typer.Option(False, "--deploy-aws", help="Enable AWS deployment support"),
     auth: str = typer.Option("jwt", "--auth", help="Authentication method: jwt / oauth / sso"),
     resume: bool = typer.Option(False, "--resume", help="Resume from previous failed step"),
+    docker: bool = typer.Option(False, "--docker", "-d", help="Include Dockerfile and .dockerignore"),
 ):
     """
     Generates a backend or frontend application based on entity config.
     """
     if mode == "backend":
-        generate_backend(file, language, project_name, deploy_aws, auth, resume)
+        generate_backend(file, language, project_name, deploy_aws, auth, resume, docker)
     elif mode == "frontend":
         typer.echo("Frontend generation is not yet implemented.")
     elif mode == "deploy":
